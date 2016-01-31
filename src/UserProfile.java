@@ -3,7 +3,7 @@
  */
 import java.net.UnknownHostException;
 import java.util.*;
-
+import java.io.*;
 import twitter4j.*;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
@@ -15,14 +15,6 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.io.StringReader;
-import java.util.HashMap;
 import opennlp.tools.chunker.ChunkerME;
 import opennlp.tools.chunker.ChunkerModel;
 import opennlp.tools.cmdline.PerformanceMonitor;
@@ -48,7 +40,6 @@ public class UserProfile {
     private List<String> list;
     private List<String> sentences;
     private Map<String, HashMap<String, Integer>> graph;
-    //private DBCollection coll;
     private Twitter twitter;
     private RequestToken requestToken;
     private List<tweet> tweets;
@@ -105,7 +96,6 @@ public class UserProfile {
         this.Pmodel = Pmodel;
         tokenizer = new TokenizerME(Tmodel);
         tagger = new POSTaggerME(Pmodel);
-       // print(screen_name);
     }
     public void setUserProfile(String name, TokenizerModel Tmodel, POSModel Pmodel) throws TwitterException, IOException{
         screen_name = name;
@@ -115,7 +105,6 @@ public class UserProfile {
         this.Pmodel = Pmodel;
         tokenizer = new TokenizerME(Tmodel);
         tagger = new POSTaggerME(Pmodel);
-       // print(id_str);
     }
     public void print(Object o){
         System.out.println(o);
@@ -143,7 +132,6 @@ public class UserProfile {
         List<Status> tweets = new ArrayList();
         while (tweets.size() < numberOfTweets - 5) {
             tweets.addAll(twitter.getUserTimeline(screen_name, pg));
-            //print("Gathered " + tweets.size() + " tweets");
             for (Status t : tweets)
                 if (t.getId() < lastID) lastID = t.getId();
             pg.setMaxId(lastID - 1);
@@ -151,15 +139,12 @@ public class UserProfile {
             pre = tweets.size();
         }
         for (Status tmp : tweets) {
-            //print(tmp.getText());
             list.add(tmp.getText());
         }
     }
 
     public List<String> getTweets(int count) throws TwitterException{
         getTextByAPI(count);
-        //getTextByDatabase(400);
-      //  print(id_str + "-" + list.size());
         return list;
     }
 
@@ -176,7 +161,6 @@ public class UserProfile {
                     sentences.add(elem);
                 }
             }
-            //list.clear();
             is.close();
         }catch (Exception e){
             e.printStackTrace();

@@ -21,8 +21,6 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
-
-import java.util.HashMap;
 import opennlp.tools.chunker.ChunkerME;
 import opennlp.tools.chunker.ChunkerModel;
 import opennlp.tools.cmdline.PerformanceMonitor;
@@ -63,20 +61,4 @@ public class generateDocuments {
             e.printStackTrace();
         }
     }
-    /*
-    public void generateDocuments() throws UnknownHostException, TwitterException, IOException{
-        for(String id_str : users){
-            System.out.print(id_str);
-            UserProfile user = new UserProfile(Long.parseLong(id_str), coll);
-            //String filename = "/Users/yupengzhang/Documents/tool/spark/keywordextraction/data/" + id_str;
-            //writeToFile(filename, user.getTweets());
-            List<String> tweets = user.getTweets(2000);
-            StringBuilder stb = new StringBuilder();
-            for(String tmp : tweets){
-                stb.append(tmp + "\n");
-            }
-            documents.add(stb.toString());
-        }
-        System.out.println(documents.size());
-    }*/
 }

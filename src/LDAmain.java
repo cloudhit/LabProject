@@ -2,8 +2,6 @@
  * Created by yupengzhang on 12/2/15.
  */
 import java.util.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class LDAmain {
@@ -28,13 +26,10 @@ public class LDAmain {
 
 
     public static void main() throws Exception {
-        //String base = System.getProperty("user.dir") + "/data/";
-        //String name = "test";
         char[] options = { 'f', 'i', 'o', 'p', 's' };
 
         // 1. get model parameters
         ArrayList<String> modelSettings = new ArrayList<String>();
-        //getModelPara(modelParas, modelSettings);
         getModelPara(modelSettings);
         int A_all = Integer.parseInt(modelSettings.get(0));
         float alpha_g = Float.parseFloat(modelSettings.get(1));
@@ -50,12 +45,10 @@ public class LDAmain {
         int outputTopicwordCnt = 20;
 
         // 2. get documents (users)
-
         HashMap<String, Integer> wordMap = new HashMap<String, Integer>();
         ArrayList<String> uniWordMap = new ArrayList<String>();
         HashMap<String, Integer> idf_count = new HashMap<>();
 
-        long t1=System.currentTimeMillis();
         int size = users.size(), block_size = size / Math.min(size, Helper.thread_num),
                 remain = size - size/block_size * block_size, num = (remain == 0)?size/block_size:size/block_size + 1;
         parseTask[] pT = new parseTask[num];
@@ -76,10 +69,7 @@ public class LDAmain {
         }catch(Exception e){
             e.printStackTrace();
         }
-        long t2=System.currentTimeMillis();
-        System.out.println("time : " + (t2-t1));
 
-        t1=System.currentTimeMillis();
 
         int id = 0;
         for(int i = 0; i < size; i ++){
@@ -93,10 +83,8 @@ public class LDAmain {
                 idf_count.put(tmp, count);
             }
         }
-        t2=System.currentTimeMillis();
-        System.out.println("time : " + (t2-t1) + "count:" + wordMap.size());
 
-        t1 = System.currentTimeMillis();
+
         parseTaskP2[] pT2 = new parseTaskP2[num];
         for(int i = 0; i < num; i ++){
             if(i != num - 1)
@@ -117,14 +105,11 @@ public class LDAmain {
             e.printStackTrace();
         }
 
-        t2=System.currentTimeMillis();
-        System.out.println("time : " + (t2-t1));
 
 
         Set<String> tf_df_words = new HashSet();
 
 
-        t1 = System.currentTimeMillis();
         tf_idf_task[] tfidf = new tf_idf_task[num];
         for(int i = 0; i < num; i ++){
             if(i != num - 1)
@@ -143,8 +128,6 @@ public class LDAmain {
             e.printStackTrace();
         }
 
-        t2=System.currentTimeMillis();
-        System.out.println("time : " + (t2-t1));
 
         if (uniWordMap.size() != wordMap.size()) {
             System.out.println("w:" + wordMap.size());
@@ -155,7 +138,6 @@ public class LDAmain {
         }
 
 
-
         int uniWordMapSize = uniWordMap.size();
 
         // 3. run the model
@@ -163,41 +145,12 @@ public class LDAmain {
                 alpha_g, beta_word, beta_b, gamma);
         model.intialize(users);
         model.estimate(users, nIter);
-
-        /*
-        freque = new PriorityQueue<>(100, new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return wordFrequence.get(o1) > wordFrequence.get(o2)? 1:-1;
-            }
-        });
-        for(String tmp : wordFrequence.keySet()){
-            if(freque.size() < 70)
-                freque.add(tmp);
-            else if(wordFrequence.get(freque.peek()) < wordFrequence.get(tmp)){
-                freque.poll();
-                freque.add(tmp);
-            }
-        }
-
-
-        Set<String> usefulWords = new HashSet();
-        while(!freque.isEmpty()){
-            usefulWords.add(freque.poll());
-        }*/
-
-        //for(String tmp : tf_df_words) System.out.println(tmp);
+        
         // 4. output model results
         //topicDistribution = model.getTopicDistributionOnUser(target);
         topicCount = model.outputTopicDistributionOnUsers();
 
         rank = new HashMap<>();
-
-        /*
-        int outputBackgroundwordCnt = 80;
-        background_words = model.outputBackgroundWordsDistribution(uniWordMap,
-                outputBackgroundwordCnt);
-        */
 
         try {
            wordsInTopics = model.outputWordsInTopics(uniWordMap, outputTopicwordCnt, rank, tf_df_words);
@@ -206,7 +159,6 @@ public class LDAmain {
         }
 
         //getTopicCategory
-        t1 = System.currentTimeMillis();
         topic_category = new HashMap<>();
         StringBuilder stb = new StringBuilder();
         int topic_size = wordsInTopics.size();
@@ -234,8 +186,6 @@ public class LDAmain {
             e.printStackTrace();
         }
 
-        t2 = System.currentTimeMillis();
-        System.out.println("time cost for api:" + (t2 - t1));
 
         myque = new PriorityQueue<>(20, new Comparator<String>() {
             @Override

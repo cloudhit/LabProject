@@ -15,7 +15,6 @@ public class Helper {
 
     public static void setKinds(){
         kinds = new HashSet<String>();
-        //kinds.add("FW");kinds.add("VBG");
         kinds.add("NN");kinds.add("NNS");
         kinds.add("NNP");kinds.add("NNPS");
         kinds.add("WP-wh");kinds.add("WP$");kinds.add("wh");
@@ -105,14 +104,6 @@ public class Helper {
     }
     public static String preprocess(String str)throws UnsupportedEncodingException{
         int index;
-        /*
-        while((index = str.indexOf("htt")) != -1){
-            int index_end = str.indexOf(" ", index);
-            if(index_end == -1)
-                str = str.substring(0,index);
-            else
-                str = str.substring(0,index) + str.substring(index_end);
-        }*/
         str = removeEmojiAndSymbolFromString(str);
         index = str.indexOf("RT");
         if(index != -1){
@@ -120,15 +111,6 @@ public class Helper {
             if(index != -1)
                 str = str.substring(index);
         }
-        /*
-        while((index = str.indexOf("@")) != -1){
-            int index_end = str.indexOf(" ", index);
-            if(index_end == -1)
-                str = str.substring(0, index);
-            else
-                str = str.substring(0, index) + str.substring(index_end);
-        }*/
-
 
         str = str.replaceAll("\\(", " ");
         str = str.replaceAll("\\[", " ");
@@ -138,7 +120,6 @@ public class Helper {
         str = str.replaceAll("\\)", " ");
         str = str.replaceAll("'", " ");
         str = str.replaceAll("\"", " ");
-        //str = str.replaceAll("#", " ");
         str = str.replaceAll(">", " ");
         str = str.replaceAll("-", " ");
         str = str.replaceAll("%", " ");
@@ -156,11 +137,6 @@ public class Helper {
             str = str.replaceAll(";", " ");
         return str;
     }
-    /*
-    private static int indexOf(Pattern pattern, String s) {
-        Matcher matcher = pattern.matcher(s);
-        return matcher.find() ? matcher.start() : -1;
-    }*/
 
     public static void findScreenName(String s, List<String> names){
         Pattern p = Pattern.compile("RT @");

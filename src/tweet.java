@@ -62,13 +62,6 @@ public class tweet {
             int count = tf.containsKey(word)? tf.get(word) + 1:1;
             tf.put(word, count);
         }
-            /*
-            tweetwords = new int[words.size()];
-
-            for (int w = 0; w < words.size(); w++) {
-                tweetwords[w] = words.get(w);
-            }
-            */
         total[0] += tmp_words.length;
     }
 

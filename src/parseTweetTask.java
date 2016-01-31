@@ -2,11 +2,7 @@
  * Created by yupengzhang on 12/12/15.
  */
 import java.io.*;
-import java.util.ArrayList;
 import java.util.*;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 import opennlp.tools.tokenize.Tokenizer;

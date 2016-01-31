@@ -3,6 +3,8 @@
  */
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.IOException;
+
 import java.net.UnknownHostException;
 import java.util.*;
 
@@ -10,8 +12,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-
-import java.io.IOException;
 
 import com.mongodb.DBCollection;
 import com.mongodb.MongoException;
@@ -107,8 +107,6 @@ public class test {
         }
 
 
-        long t1 = System.currentTimeMillis();
-
         System.out.println("size:" + users.size());
         int size = users.size(), block_size = size / Math.min(size, Helper.thread_num),
                 remain = size - size/block_size * block_size, num = (remain == 0)?size/block_size:size/block_size + 1;
@@ -137,8 +135,6 @@ public class test {
         }catch(Exception e){
             e.printStackTrace();
         }
-        long t2 = System.currentTimeMillis();
-        System.out.println("getTweetstime:" + (t2 - t1));
 
         users.add(up);
 
@@ -385,8 +381,6 @@ public class test {
 	@GET
 	@Produces("application/xml")
     public String run(@PathParam("c") String name) throws UnknownHostException,MongoException, IOException, TwitterException {
-       // gC = new getConnected();
-        //coll = gC.getColl();
 		ans = new ArrayList();
 		topics = new HashMap();
 		this.name = name;

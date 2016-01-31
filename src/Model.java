@@ -8,14 +8,10 @@ import java.io.*;
 import java.util.*;
 import java.lang.Object;
 
-//import Common.ComUtil;
-//import Common.FileUtil;
-//import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 
 public class Model {
 
     public int A; // all topics
-    // public int T; //length of time stamp
     public int U; // user number
     public int V; // vocabulary size
     public int nIter; // iteration number
@@ -36,9 +32,6 @@ public class Model {
     public short[][] z; // all hidden variables
     public boolean[][][] x;
 
-    // public short[][][] iterZ;
-    // public boolean[][][][] iterX;
-
     public int[][] C_ua;
     public long[] C_lv;
     public int[][] C_word;
@@ -46,13 +39,11 @@ public class Model {
 
     public int[] countAllWord; // # of words which are general topic a
 
-    // public int[][] CountTopicsTime;
 
     public Model(int A_all, int t, int u, int v, int niter, float alpha_g,
                  float beta, float beta_b, float gamm) {
 
         this.A = A_all;
-        // this.T = t;
         this.U = u;
         this.V = v;
         this.nIter = niter;
@@ -115,14 +106,6 @@ public class Model {
             countAllWord[i] = 0;
         }
 
-        // CountTopicsTime = new int[A][T];
-        // for(int i=0; i<A; i++)
-        // {
-        // for(int j=0; j<T; j++)
-        // {
-        // CountTopicsTime[i][j] = 0;
-        // }
-        // }
     }
 
     public Model(int A_all, int u, int v, int niter, float alpha_g, float beta,
@@ -252,7 +235,6 @@ public class Model {
     public void estimate(ArrayList<UserProfile> users, int nIter) {
 
         int niter = 0;
-        // int step = 0;
         while (true) {
             niter++;
             System.out.println("iteration" + " " + niter + " ...");
@@ -318,24 +300,21 @@ public class Model {
 
     private boolean draw_x(int u, int d, int n, int word) {
 
-        // int t = time;
-
         boolean returnvalue = false;
-
         double[] P_lv;
         P_lv = new double[2];
         double Pb = 1;
         double Ptopic = 1;
 
         P_lv[0] = (C_lv[0] + gamma[0])
-                / (C_lv[0] + C_lv[1] + gamma[0] + gamma[1]); // part 1 from
+                / (C_lv[0] + C_lv[1] + gamma[0] + gamma[1]); 
         // counting C_lv
 
         P_lv[1] = (C_lv[1] + gamma[1])
                 / (C_lv[0] + C_lv[1] + gamma[0] + gamma[1]);
 
         Pb = (C_b[word] + beta_background[word])
-                / (C_lv[0] + beta_background_sum); // word in background part(2)
+                / (C_lv[0] + beta_background_sum); 
         Ptopic = (C_word[z[u][d]][word] + beta_word[word])
                 / (countAllWord[z[u][d]] + beta_word_sum);
 
@@ -357,7 +336,6 @@ public class Model {
     private void sample_z(int u, int d, UserProfile buffer_user, tweet tw) {
 
         short tweet_topic = z[u][d];
-        // int t = tw.time;
         int w = 0;
 
         C_ua[u][tweet_topic]--;
@@ -385,10 +363,7 @@ public class Model {
         }
     }
 
-    private short draw_z(int u, int d, UserProfile buffer_user, tweet tw) { // return y
-        // then
-        // z
-
+    private short draw_z(int u, int d, UserProfile buffer_user, tweet tw) {
         int word;
         int w;
 
@@ -397,13 +372,8 @@ public class Model {
         P_topic = new double[A];
         pCount = new int[A];
 
-        HashMap<Integer, Integer> wordcnt = new HashMap<Integer, Integer>(); // store
-        // the
-        // topic
-        // words
-        // with
-        // frequency
-        int totalWords = 0; // total number of topic words
+        HashMap<Integer, Integer> wordcnt = new HashMap<Integer, Integer>(); 
+        int totalWords = 0; 
 
         for (w = 0; w < tw.tweetwords.length; w++) {
             if (x[u][d][w] == true) {
@@ -474,14 +444,10 @@ public class Model {
 
     private void reComputeProbs(double[] p_topic, int[] pCount) {
         int max = pCount[0];
-        // System.out.print(max + " ");
         for (int i = 1; i < pCount.length; i++) {
             if (pCount[i] > max)
                 max = pCount[i];
-            // System.out.print(pCount[i] + " ");
         }
-        //if (max > 0)
-          //  FileUtil.print(p_topic, "previous: ", " ", "\n");
         for (int i = 0; i < pCount.length; i++) {
             p_topic[i] = p_topic[i] * Math.pow(1e150, pCount[i] - max);
         }
@@ -491,8 +457,6 @@ public class Model {
                 System.out.print(pCount[i] + " ");
             }
             System.out.println();
-            //FileUtil.print(p_topic, "current: ", " ", "\n");
-            // System.exit(0);
         }
     }
 
@@ -614,14 +578,11 @@ public class Model {
                                     ArrayList<String> uniWordMap) throws Exception {
         BufferedWriter writer = null;
 
-        // ArrayList<String> outlines = new ArrayList<String>();
-
         for (int u = 0; u < users.size(); u++) {
             UserProfile buffer_user = users.get(u);
 
             writer = new BufferedWriter(new FileWriter(new File(output + "/"
                     + buffer_user.getScreen_name())));
-            // outlines.add(buffer_user.userID + " " + buffer_user.tweetCnt);
             for (int d = 0; d < buffer_user.getTweets2().size(); d++) {
                 tweet buffer_tweet = buffer_user.getTweets2().get(d);
                 String line = "z=" + z[u][d] + ":  ";
@@ -655,15 +616,11 @@ public class Model {
                         line = "2011-11-" + buffer_time + ":\t" + line;
                     }
                 }
-                // outlines.add(line);
                 writer.write(line + "\n");
             }
             writer.flush();
             writer.close();
         }
-
-        // FileUtil.writeLines(output, outlines);
-        // outlines.clear();
     }
 
 }
